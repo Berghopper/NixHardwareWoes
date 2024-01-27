@@ -10,5 +10,5 @@ Macbook air 2015 (MacbookAir7,2) - Fedora 39
 post-install from this github;
 
 ```
-curl -s ... | sudo bash
+curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015fedora.sh | bash
 ```
