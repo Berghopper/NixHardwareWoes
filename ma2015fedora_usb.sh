@@ -32,12 +32,25 @@ sudo dnf install -y git kernel-devel kernel-headers make gcc dkms libudev-devel 
 sudo dnf install -y akmod-wl
 # remove old wifi drivers
 sudo dnf remove -y b43-fwcutter
+## also install usb wifi drivers (RTL88x2BU-Linux-Driver)
+# Clone the RTL88x2BU driver repository
+cd ~/
+git clone https://github.com/RinCat/RTL88x2BU-Linux-Driver.git
+cd RTL88x2BU-Linux-Driver
+# Add the driver to dkms and build it
+sudo dkms add .
+sudo dkms install -m 88x2bu -v 1.0
+# Load the driver module
+sudo modprobe -r wl
+sudo modprobe 88x2bu
+##
 # now blacklist all other wifi drivers
 sudo echo "blacklist b43
 blacklist brcmfmac
 blacklist rtw88_8822bu
 blacklist rtw88_usb
-blacklist rtw88_core" | sudo tee /etc/modprobe.d/wifi-blacklist.conf
+blacklist rtw88_core
+blacklist wl" | sudo tee /etc/modprobe.d/wifi-blacklist.conf
 # small bluetooth fix
 sudo echo "options snd_hda_intel power_save=0
 options snd_hda_intel power_save_controller=N" | sudo tee /etc/modprobe.d/snd_hda_intel_fix.conf
@@ -115,6 +128,7 @@ SUMMARY_FILE=~/Desktop/system_config_summary.txt
     echo "Installed Drivers"
     echo "-----"
     echo "akmod-wl (Broadcom BCM4360)"
+    echo "RTL88x2BU-Linux-Driver (USB Wifi)"
     echo "facetimehd (FaceTime HD Camera)"
     echo "---------------------------------------------"
     echo "Installed Configurations:"
@@ -128,7 +142,7 @@ SUMMARY_FILE=~/Desktop/system_config_summary.txt
     echo "---------------------------------------------"
     echo "Disabled Drivers:"
     echo "-----"
-    echo "b43 brcmfmac rtw88_8822bu rtw88_usb rtw88_core"
+    echo "b43 brcmfmac rtw88_8822bu rtw88_usb rtw88_core wl"
     echo "see: /etc/modprobe.d/wifi-blacklist.conf"
     echo "---------------------------------------------"
     echo "Disabled Services:"
@@ -137,6 +151,7 @@ SUMMARY_FILE=~/Desktop/system_config_summary.txt
     echo "---------------------------------------------"
     echo "Downloaded Files/Repos:"
     echo "-----"
+    echo "~/RTL88x2BU-Linux-Driver"
     echo "~/facetimehd-firmware"
     echo "~/bootcamp5.1.5769.zip"
     echo "~/bootcamp5.1.5769"
@@ -145,6 +160,8 @@ SUMMARY_FILE=~/Desktop/system_config_summary.txt
     echo "---------------------------------------------"
     echo "Additional Notes:"
     echo "-----"
+    echo "broadcom-wl drivers are included but disabled, it's assumed you have the USB wifi dongle noted in the README"
+    echo ""
     echo "some bluetooth device power management is disabled, as it might cause issues with bluetooth audio"
     echo "see: /etc/modprobe.d/snd_hda_intel_fix.conf"
 } > "$SUMMARY_FILE"

@@ -9,6 +9,10 @@ I won't try to be a puritan and only include free software: I just want everythi
 Macbook air 2015 (MacbookAir7,2) - Fedora 39 
 post-install from this github;
 
-```
+'Barebones' install:
+```bash
 curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015fedora.sh | bash
 ```
+Install with 88x2bu chipset (USB WiFi); [https://github.com/morrownr/88x2bu-20210702](https://github.com/morrownr/88x2bu-20210702)
+```bash
+curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015fedora_usb.sh | bash ```
