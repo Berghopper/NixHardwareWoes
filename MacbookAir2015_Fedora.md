@@ -161,6 +161,39 @@ Viewing any type of video content? You probably want the codecs from RPM fusion 
 
 [https://rpmfusion.org/Howto/Multimedia](https://rpmfusion.org/Howto/Multimedia)
 
+### Macbook sleep issues
+Sleep works completely fine, but you might notice it takes anywhere between 2-3 seconds to a full minute to wake up. The cpu core wake-up might get stuck/be unreseponsive.
+
+You can make a script at `/usr/lib/systemd/system-sleep/fix-macbook-wakeup` to force the cpu cores to go offline/wake-up. This seems to fix the issue:
+
+```bash
+#!/bin/sh
+
+switch_cpu () {
+    for cpu in $(ls /sys/devices/system/cpu | egrep -i 'cpu[1-9][0-9]?'); do
+      echo $1 | sudo tee /sys/devices/system/cpu/$cpu/online > /dev/null;
+    done
+}
+
+echo "fix macbook wakeup"
+case "$1/$2" in
+  pre/*)
+    echo "going to $2..."       
+    switch_cpu 0        
+    ;;
+  post/*)
+    echo "waking up from $2..."
+    switch_cpu 1
+   ;;
+esac
+```
+
+`sudo chmod +x /usr/lib/systemd/system-sleep/fix-macbook-wakeup`
+
+Refs:
+- [https://discussion.fedoraproject.org/t/disabling-cpu-before-suspend-and-enabling-it-after-wake-up/81890/5](https://discussion.fedoraproject.org/t/disabling-cpu-before-suspend-and-enabling-it-after-wake-up/81890/5)
+- [https://discussion.fedoraproject.org/t/wake-up-from-suspend-takes-4-minutes/82194/9](https://discussion.fedoraproject.org/t/wake-up-from-suspend-takes-4-minutes/82194/9)
+
 ### Touchpad scroll speed under Gnome
 
 This is a minor tweak, but scrolling speed under Gnome is way to fast by default. They have had an issue open for this for some years now, but after slow discussion they found blockers and this is all still open:

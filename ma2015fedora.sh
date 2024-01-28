@@ -65,6 +65,30 @@ echo 'install_items+=" /usr/lib/firmware/facetimehd/firmware.bin "' | sudo tee -
 sudo dnf copr enable -y frgt10/facetimehd-dkms
 sudo dnf install -y facetimehd
 sudo modprobe facetimehd
+# tweak wake-up from suspend, it has trouble with bringing the cores back up
+sudo tee /usr/lib/systemd/system-sleep/fix-macbook-wakeup << 'EOF'
+#!/bin/sh
+
+switch_cpu () {
+    for cpu in $(ls /sys/devices/system/cpu | egrep -i 'cpu[1-9][0-9]?'); do
+      echo $1 | sudo tee /sys/devices/system/cpu/$cpu/online > /dev/null;
+    done
+}
+
+echo "fix macbook wakeup"
+case "$1/$2" in
+  pre/*)
+    echo "going to $2..."       
+    switch_cpu 0        
+    ;;
+  post/*)
+    echo "waking up from $2..."
+    switch_cpu 1
+   ;;
+esac
+EOF
+sudo chmod +x /usr/lib/systemd/system-sleep/fix-macbook-wakeup
+sudo systemctl daemon-reload
 # tweak touchpad scrolling, by default it's too fast
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 echo 'scroll-factor=0.175' | sudo tee -a /etc/libinput.conf
@@ -121,6 +145,8 @@ SUMMARY_FILE=~/Desktop/system_config_summary.txt
     echo "-----"
     echo "mbpfan (Fan Control):"
     echo "/etc/mbpfan.conf"
+    echo "sleep-wakeup (CPU Core Fix):"
+    echo "/usr/lib/systemd/system-sleep/fix-macbook-wakeup"
     echo "auto-cpufreq (CPU Power Management):"
     echo "/etc/auto-cpufreq.conf"
     echo "libinput-config (Touchpad Scrolling Fix):"

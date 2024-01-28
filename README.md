@@ -16,3 +16,5 @@ curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015
 Install with 88x2bu chipset (USB WiFi); [https://github.com/morrownr/88x2bu-20210702](https://github.com/morrownr/88x2bu-20210702)
 ```bash
 curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015fedora_usb.sh | bash ```
+
+writeup: [MackbookAir2015_Fedora.md](MackbookAir2015_Fedora.md)
