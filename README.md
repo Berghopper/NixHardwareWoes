@@ -18,4 +18,4 @@ Install with 88x2bu chipset (USB WiFi); [https://github.com/morrownr/88x2bu-2021
 curl -s https://raw.githubusercontent.com/Berghopper/NixHardwareWoes/main/ma2015fedora_usb.sh | bash 
 ```
 
-writeup: [MackbookAir2015_Fedora.md](MackbookAir2015_Fedora.md)
+writeup: [MacbookAir2015_Fedora.md](MacbookAir2015_Fedora.md)
